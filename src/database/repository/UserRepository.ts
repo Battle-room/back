@@ -13,7 +13,7 @@ export class UserRepository {
     return this.prisma.user.findFirst({where});
   }
 
-  async create(data: Prisma.UserCreateInput) {
+  async create(data: Prisma.UserUncheckedCreateInput) {
     return this.prisma.user.create({data});
   }
 }
