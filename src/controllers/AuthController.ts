@@ -20,11 +20,11 @@ export class AuthController {
   @ApiOkResponse({
     type: AuthLoginResponse,
   })
-  //@UseGuards(LocalAuthGuard)
+  @UseGuards(LocalAuthGuard)
   @Post('/login')
-  async login (@Body() dto: LogInDTO) {
+  async login (@Request() req) {
     console.log('iam here');
-    return await this.authService.login(dto);
+    return await this.authService.login(req.user);
   }
 
   @ApiOkResponse({

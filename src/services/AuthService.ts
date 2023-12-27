@@ -35,8 +35,7 @@ export class AuthService {
     return user;
   }
 
-  async login (dto: LogInDTO): Promise<TokenDTO> {
-    const user = await this.userRepository.find(dto);
+  async login (user): Promise<TokenDTO> {
     return this.getToken(user);
   }
 
