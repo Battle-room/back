@@ -2,7 +2,6 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { User } from '@prisma/client';
 import { JwtPayload } from '../security/JwtPayload';
 import { TokenDTO } from '../dtos/TokenDTO';
-import { UniqueUserDTO } from '../dtos/UniqueUserDTO';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { UserRepository } from '../database/repository/UserRepository';
@@ -57,6 +56,12 @@ export class AuthService {
     };
   }
 
+  private getAccessToken(payload) {
+    return {
+      accessToken: this.jwtService.sign(payload)
+    };
+  }
+
   private async checkPassword (password: string, hash: string) {
     return bcrypt.compare(password, hash);
   }
@@ -70,5 +75,10 @@ export class AuthService {
   async signIn(dto: CreateUserDTO) {
     dto.password = await this.hashPassword(dto.password);
     return this.userRepository.create(dto);
+  }
+
+  refresh(user: User) {
+    const payload = this.createPayload(user);
+    return this.getAccessToken(payload);
   }
 }

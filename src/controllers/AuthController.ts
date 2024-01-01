@@ -1,8 +1,9 @@
 import { Body, Controller, Post, Request, UseGuards } from "@nestjs/common";
-import { ApiOkResponse, ApiProperty, ApiTags } from "@nestjs/swagger";
+import { ApiOkResponse, ApiOperation, ApiTags } from "@nestjs/swagger";
 import { CreateUserDTO } from "src/dtos/CreateUserDTO";
 import { AuthLoginResponse } from "src/responses/AuthLoginResponses";
-import { CreateUserResponse } from "src/responses/CreateUserResponse";
+import { AuthRefreshResponse } from "src/responses/AuthRefreshResponse";
+import { JwtGuard } from "src/security/JwtGuard";
 import { LocalAuthGuard } from "src/security/LocalAuthGuard";
 import { AuthService } from "src/services/AuthService";
 
@@ -20,8 +21,8 @@ export class AuthController {
     type: AuthLoginResponse,
   })
   @UseGuards(LocalAuthGuard)
-  @ApiProperty({
-    description: 'Log in user'
+  @ApiOperation({
+    summary: 'Log in user'
   })
   @Post('/login')
   async login (@Request() req) {
@@ -29,11 +30,23 @@ export class AuthController {
   }
 
   @ApiOkResponse()
-  @ApiProperty({
-    description: 'Registrate user'
+  @ApiOperation({
+    summary: 'Registrate user'
   })
   @Post('/registrate')
   async signIn(@Body() dto: CreateUserDTO) {
     return await this.authService.signIn(dto);
+  }
+
+  @ApiOkResponse({
+    type: AuthRefreshResponse,
+  })
+  @UseGuards(JwtGuard)
+  @ApiOperation({
+    summary: 'Refresh access token'
+  })
+  @Post('/refresh')
+  async refresh (@Request() req) {
+    return this.authService.refresh(req.user);
   }
 }
