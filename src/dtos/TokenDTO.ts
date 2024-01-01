@@ -4,4 +4,7 @@ import { validationOptionsMsg } from '../utils/GLOBALS';
 export class TokenDTO {
   @IsNotEmpty(validationOptionsMsg('Access token cannot be empty'))
     accessToken: string;
+
+  @IsNotEmpty(validationOptionsMsg('Access token cannot be empty'))
+    refreshToken: string
 }

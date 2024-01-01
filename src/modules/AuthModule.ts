@@ -24,7 +24,8 @@ import { AuthController } from "src/controllers/AuthController";
     global: true,
     secret: process.env.SECRET,
     signOptions: { expiresIn: '86400s' },
-  }), PrismaModule],
+  }), 
+  PrismaModule],
   exports: [AuthService]
 })
 export class AuthModule {}

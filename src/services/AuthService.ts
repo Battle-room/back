@@ -8,7 +8,6 @@ import * as bcrypt from 'bcrypt';
 import { UserRepository } from '../database/repository/UserRepository';
 import { InvalidEntityIdException } from '../utils/exceptions/InvalidEntityIdException';
 import { CreateUserDTO } from 'src/dtos/CreateUserDTO';
-import { LogInDTO } from 'src/dtos/LogInDTO';
 
 @Injectable()
 export class AuthService {
@@ -36,7 +35,7 @@ export class AuthService {
   }
 
   async login (user): Promise<TokenDTO> {
-    return this.getToken(user);
+    return this.getTokens(user);
   }
 
   private createPayload (user: User): JwtPayload {
@@ -47,12 +46,14 @@ export class AuthService {
     };
   }
 
-  private getToken (user: User): TokenDTO {
+  private getTokens (user: User): TokenDTO {
     const payload = this.createPayload(user);
 
-    const accessToken = this.jwtService.sign(payload);
     return {
-      accessToken,
+      refreshToken: this.jwtService.sign(payload, {
+        expiresIn: process.env.JWTTTL || '86400s'
+      }),
+      accessToken: this.jwtService.sign(payload)
     };
   }
 

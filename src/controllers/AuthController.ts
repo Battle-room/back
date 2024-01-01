@@ -1,7 +1,6 @@
 import { Body, Controller, Post, Request, UseGuards } from "@nestjs/common";
-import { ApiOkResponse, ApiTags } from "@nestjs/swagger";
+import { ApiOkResponse, ApiProperty, ApiTags } from "@nestjs/swagger";
 import { CreateUserDTO } from "src/dtos/CreateUserDTO";
-import { LogInDTO } from "src/dtos/LogInDTO";
 import { AuthLoginResponse } from "src/responses/AuthLoginResponses";
 import { CreateUserResponse } from "src/responses/CreateUserResponse";
 import { LocalAuthGuard } from "src/security/LocalAuthGuard";
@@ -21,14 +20,17 @@ export class AuthController {
     type: AuthLoginResponse,
   })
   @UseGuards(LocalAuthGuard)
+  @ApiProperty({
+    description: 'Log in user'
+  })
   @Post('/login')
   async login (@Request() req) {
-    console.log('iam here');
     return await this.authService.login(req.user);
   }
 
-  @ApiOkResponse({
-    type: CreateUserResponse
+  @ApiOkResponse()
+  @ApiProperty({
+    description: 'Registrate user'
   })
   @Post('/registrate')
   async signIn(@Body() dto: CreateUserDTO) {
