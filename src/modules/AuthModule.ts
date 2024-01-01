@@ -8,6 +8,7 @@ import { LocalStrategy } from "src/security/LocalStrategy";
 import { AuthService } from "src/services/AuthService";
 import { PrismaModule } from "./PrismaModule";
 import { AuthController } from "src/controllers/AuthController";
+import { PassportModule } from "@nestjs/passport";
 
 
 @Module({
@@ -25,7 +26,8 @@ import { AuthController } from "src/controllers/AuthController";
     secret: process.env.SECRET,
     signOptions: { expiresIn: '86400s' },
   }), 
-  PrismaModule],
+  PrismaModule,
+  PassportModule],
   exports: [AuthService]
 })
 export class AuthModule {}
