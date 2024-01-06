@@ -18,3 +18,8 @@ model User {
 
   @@map("users")
 }
+
+model Lobby {
+  id                 String   @id @default(uuid())
+  key                String
+}
