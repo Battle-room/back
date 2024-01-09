@@ -1,12 +1,13 @@
-import { Server } from "socket.io";
+import { Injectable } from "@nestjs/common";
 import { LobbyRepository } from "src/database/repository/LobbyRepository";
 
-
+@Injectable()
 export class LobbyManager {
-  public server: Server;
-  private lobbyRepository: LobbyRepository;
+  constructor(
+    private lobbyRepository: LobbyRepository,
+  ) {}
 
   public async createLobby() {
-    await this.lobbyRepository.create();
+    return await this.lobbyRepository.create();
   }
 }
