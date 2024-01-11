@@ -7,7 +7,12 @@ export class LobbyManager {
     private lobbyRepository: LobbyRepository,
   ) {}
 
+  private lobbies = {}
+
+
   public async createLobby() {
-    return await this.lobbyRepository.create();
+    const lobby = this.lobbyRepository.create();
+    this.lobbies[lobby.key] = lobby;
+    return lobby;
   }
 }
