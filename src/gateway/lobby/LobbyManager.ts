@@ -10,9 +10,13 @@ export class LobbyManager {
   private lobbies = {}
 
 
-  public async createLobby() {
+  public createLobby() {
     const lobby = this.lobbyRepository.create();
     this.lobbies[lobby.key] = lobby;
     return lobby;
+  }
+
+  public connectToLobby(lobbyKey: string) {
+    return this.lobbies[lobbyKey];
   }
 }
