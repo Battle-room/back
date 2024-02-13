@@ -9,7 +9,7 @@ export class UserRepository {
     private prisma: PrismaService,
   ) {}
 
-  async find(where: Prisma.UserWhereInput) {
+  async findOne(where: Prisma.UserWhereInput) {
     return this.prisma.user.findFirst({where});
   }
 

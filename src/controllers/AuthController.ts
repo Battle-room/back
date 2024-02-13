@@ -16,6 +16,11 @@ export class AuthController {
   constructor(
     private authService: AuthService
   ) {}
+
+  @Post('/registration')
+  async registration(@Body() dto: CreateUserDTO) {
+    return await this.authService.registrate(dto);
+  }
   
   @ApiOkResponse({
     type: AuthLoginResponse,

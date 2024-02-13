@@ -7,6 +7,7 @@ import * as bcrypt from 'bcrypt';
 import { UserRepository } from '../database/repository/UserRepository';
 import { InvalidEntityIdException } from '../utils/exceptions/InvalidEntityIdException';
 import { CreateUserDTO } from 'src/dtos/CreateUserDTO';
+import { UserAlreadyExistException } from 'src/utils/exceptions/UserAlreadyExistException';
 
 @Injectable()
 export class AuthService {
@@ -16,7 +17,7 @@ export class AuthService {
   ) {}
 
   async validateUser (username: string, password: string) {
-    const user = await this.userRepository.find({
+    const user = await this.userRepository.findOne({
       OR: [
         { username },
         { email: username },
@@ -80,5 +81,22 @@ export class AuthService {
   refresh(user: User) {
     const payload = this.createPayload(user);
     return this.getAccessToken(payload);
+  }
+
+  async checkIfUserExist(email: string) {
+    const user = await this.userRepository.findOne({email});
+    return !user;
+  }
+
+  async registrate(dto: CreateUserDTO) {
+    if(!await this.checkIfUserExist(dto.email)) {
+      throw new UserAlreadyExistException();
+    }
+
+    dto.password = await this.hashPassword(dto.password);
+
+    const user = await this.userRepository.create(dto);
+
+    return this.getTokens(user);
   }
 }
