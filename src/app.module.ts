@@ -1,18 +1,22 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { PrismaModule } from './modules/PrismaModule';
-import { AuthModule } from './modules/AuthModule';
-import { GatewayModule } from './modules/GatewayModule';
+import config from './config/config';
+import { DatabaseModule } from './database/database.module';
+import AuthModule from './api/auth/auth.module';
+import { CorsMiddleware } from './utils/middleware/cors.middleware';
 
 @Module({
-  imports: [ConfigModule.forRoot({
-    isGlobal: true,
-  }),
-  PrismaModule,
-  AuthModule,
-  GatewayModule
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      load: [config],
+    }),
+    DatabaseModule,
+    AuthModule,
   ],
-  controllers: [],
-  providers: [],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(CorsMiddleware).forRoutes('*');
+  }
+}
