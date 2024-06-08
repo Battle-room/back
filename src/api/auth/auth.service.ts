@@ -113,7 +113,7 @@ export default class AuthService {
       to: user.email,
       subject: 'Email verify',
       message: 'Follow the link to verify your email',
-      link: `${this.frontendConfig.url}/verify/${token.value}`,
+      link: `${this.frontendConfig.url}/verify/email/${token.value}`,
     });
 
     return {
@@ -130,7 +130,7 @@ export default class AuthService {
 
     if (!token) throw new BadRequestException('Invalid token');
 
-    if (Date.now() - token.createdAt.getTime() > HOUR)
+    if (Date.now() - token.createdAt.getTime() > 3*HOUR)
       throw new BadRequestException(
         'Token has expired, repeat the email verification request process',
       );
