@@ -4,6 +4,7 @@ import config from './config/config';
 import { DatabaseModule } from './database/database.module';
 import AuthModule from './api/auth/auth.module';
 import { CorsMiddleware } from './utils/middleware/cors.middleware';
+import GatewayModule from './gateway/gateway.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { CorsMiddleware } from './utils/middleware/cors.middleware';
     }),
     DatabaseModule,
     AuthModule,
+    GatewayModule,
   ],
 })
 export class AppModule implements NestModule {
