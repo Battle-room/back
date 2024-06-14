@@ -4,6 +4,7 @@ import { ConfigService } from '@nestjs/config';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as cookieParser from 'cookie-parser';
+import { seeder } from './utils/seeds/seeds';
 
 async function bootstrap() {
   const configService = new ConfigService();
@@ -13,6 +14,8 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     cors: true,
   });
+
+  await seeder();
 
   app.useGlobalPipes(
     new ValidationPipe({

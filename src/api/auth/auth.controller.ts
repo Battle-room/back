@@ -2,10 +2,13 @@ import {
   Body,
   Controller,
   Get,
+  Patch,
   Post,
   Req,
   Res,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import AuthService from './auth.service';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
@@ -18,6 +21,10 @@ import { LogInDTO } from './dto/log-in.dto';
 import { Request } from 'express';
 import { UserResponse } from './response/user.response';
 import { JwtGuard } from 'src/security/jwt.guard';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { URequest } from 'src/utils/types/user-request.type';
+import { FileValidationPipe } from './pipes/file-validation.pipe';
+import { UpdateUserDTO } from './dto/update-user.dto';
 
 @ApiTags('Authorization')
 @Controller('auth')
@@ -76,6 +83,31 @@ export default class AuthController {
     );
     response.cookie('refresh_token', tokens.refreshToken, { httpOnly: true });
     return { access_token: tokens.accessToken };
+  }
+
+  @UseGuards(JwtGuard)
+  @Patch()
+  @ApiOperation({ summary: 'Update user' })
+  @ApiOkResponse({ type: MessageResponse })
+  async updateUser(
+    @Req() request: URequest,
+    @Body() data: UpdateUserDTO,
+  ) {
+    this.authService.updateUser(request.user, data);
+    return { message: 'User successfuly updated' };
+  }
+
+  @UseGuards(JwtGuard)
+  @Patch('/photo')
+  @ApiOperation({ summary: 'Update user profile picture' })
+  @ApiOkResponse({ type: MessageResponse })
+  @UseInterceptors(FileInterceptor('file'))
+  async updateUserAvatar(
+    @Req() request: URequest,
+    @UploadedFile(FileValidationPipe) file: Express.Multer.File
+  ) {
+    await this.authService.updateUserProfilePhoto(request.user, file);
+    return { message: 'Avatar successfuly uploaded' };
   }
 
   @UseGuards(JwtGuard)

@@ -21,6 +21,8 @@ import { HOUR } from '../../utils/consts';
 import { LogInDTO } from './dto/log-in.dto';
 import { JwtPayload } from '../../security/JwtPayload';
 import { Tokens } from '../../utils/types/tokens.type';
+import FileService from 'src/files-public/file.service';
+import { UpdateUserDTO } from './dto/update-user.dto';
 
 @Injectable()
 export default class AuthService {
@@ -33,6 +35,7 @@ export default class AuthService {
     private readonly jwtConfig: JwtConfiguration,
     private readonly frontendConfig: FrontendConfiguration,
     private readonly mailService: MailService,
+    private readonly fileService: FileService,
   ) {}
 
   async validateUser(email: string, password: string): Promise<User> {
@@ -175,5 +178,20 @@ export default class AuthService {
     if (!user) throw new UnauthorizedException();
 
     return this.getTokens(user);
+  }
+
+  async updateUserProfilePhoto(user: User, file: Express.Multer.File) {
+    if(user.avatar) this.fileService.deleteFile(user.avatar);
+
+    const avatarName = this.fileService.uploadFile(file);
+    user.avatar = avatarName;
+    await this.userRepo.save(user);
+    return;
+  }
+
+  async updateUser(user, data: UpdateUserDTO) {
+    user = {...user, ...data};
+    await this.userRepo.save(user);
+    return;
   }
 }
