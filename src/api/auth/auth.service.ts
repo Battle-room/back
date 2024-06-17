@@ -161,7 +161,7 @@ export default class AuthService {
     return this.getTokens(user);
   }
 
-  private async verifyToken(token: string): Promise<JwtPayload> {
+  async verifyToken(token: string): Promise<JwtPayload> {
     try {
       return await this.jwtService.verify(token);
     } catch (error) {

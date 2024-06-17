@@ -38,5 +38,6 @@ import FileModule from 'src/files-public/file.module';
     JwtStrategy,
     JwtGuard,
   ],
+  exports: [AuthService],
 })
 export default class AuthModule {}
