@@ -2,7 +2,6 @@ import {
   Column,
   Entity,
   Generated,
-  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -26,7 +25,7 @@ export class User {
   @Column({ type: 'varchar' })
   password: string;
 
-  @Column({ type: 'varchar', nullable: true})
+  @Column({ type: 'varchar', nullable: true })
   avatar?: string;
 
   @OneToMany(() => Token, (token) => token.user)

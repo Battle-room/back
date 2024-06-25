@@ -89,10 +89,7 @@ export default class AuthController {
   @Patch()
   @ApiOperation({ summary: 'Update user' })
   @ApiOkResponse({ type: MessageResponse })
-  async updateUser(
-    @Req() request: URequest,
-    @Body() data: UpdateUserDTO,
-  ) {
+  async updateUser(@Req() request: URequest, @Body() data: UpdateUserDTO) {
     this.authService.updateUser(request.user, data);
     return { message: 'User successfuly updated' };
   }
@@ -104,7 +101,7 @@ export default class AuthController {
   @UseInterceptors(FileInterceptor('file'))
   async updateUserAvatar(
     @Req() request: URequest,
-    @UploadedFile(FileValidationPipe) file: Express.Multer.File
+    @UploadedFile(FileValidationPipe) file: Express.Multer.File,
   ) {
     await this.authService.updateUserProfilePhoto(request.user, file);
     return { message: 'Avatar successfuly uploaded' };

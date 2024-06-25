@@ -1,7 +1,6 @@
-import User from "../user/user";
+import User from '../user/user';
 
 export default class Lobby {
-
   readonly id: string;
   readonly name: string;
   private readonly password: string;
@@ -9,7 +8,13 @@ export default class Lobby {
   private readonly packageId: string;
   users: User[] = [];
 
-  constructor(id: string, name: string, password: string, lider: User, packageId: string) {
+  constructor(
+    id: string,
+    name: string,
+    password: string,
+    lider: User,
+    packageId: string,
+  ) {
     this.id = id;
     this.name = name;
     this.password = password;

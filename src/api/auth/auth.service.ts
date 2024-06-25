@@ -133,7 +133,7 @@ export default class AuthService {
 
     if (!token) throw new BadRequestException('Invalid token');
 
-    if (Date.now() - token.createdAt.getTime() > 3*HOUR)
+    if (Date.now() - token.createdAt.getTime() > 3 * HOUR)
       throw new BadRequestException(
         'Token has expired, repeat the email verification request process',
       );
@@ -181,7 +181,7 @@ export default class AuthService {
   }
 
   async updateUserProfilePhoto(user: User, file: Express.Multer.File) {
-    if(user.avatar) this.fileService.deleteFile(user.avatar);
+    if (user.avatar) this.fileService.deleteFile(user.avatar);
 
     const avatarName = this.fileService.uploadFile(file);
     user.avatar = avatarName;
@@ -190,7 +190,7 @@ export default class AuthService {
   }
 
   async updateUser(user, data: UpdateUserDTO) {
-    user = {...user, ...data};
+    user = { ...user, ...data };
     await this.userRepo.save(user);
     return;
   }

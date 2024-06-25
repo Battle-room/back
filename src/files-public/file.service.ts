@@ -1,11 +1,10 @@
-import { Injectable } from "@nestjs/common";
-import * as path from "path";
+import { Injectable } from '@nestjs/common';
+import * as path from 'path';
 import * as fs from 'fs';
 import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export default class FileService {
-
   private readonly fileDir: string = path.join(__dirname, '..', '..', 'public');
 
   uploadFile(file: Express.Multer.File): string {
