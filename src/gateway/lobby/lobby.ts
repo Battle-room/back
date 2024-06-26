@@ -22,4 +22,19 @@ export default class Lobby {
     this.packageId = packageId;
     this.users.push(lider);
   }
+
+  comparePassword(password: string) {
+    return password === this.password;
+  }
+
+  addUser(user: User): void {
+    this.users.push(user);
+  }
+
+  removeUser(user: User): void {
+    const index = this.users.findIndex((u) => u.id === user.id);
+    if (index !== -1) {
+      this.users.splice(index, 1);
+    }
+  }
 }

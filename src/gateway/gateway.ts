@@ -15,6 +15,8 @@ import { SocketEvent } from 'src/utils/enums/socket-event.enum';
 import { CreateLobbyDTO } from './lobby/dto/create-lobby.dto';
 import { UsePipes } from '@nestjs/common';
 import { SocketValidationPipe } from './pipe/socket-validation.pipe';
+import { JoinLobbyDTO } from './lobby/dto/join-lobby.dto';
+import { SocketErrorMessage } from 'src/utils/enums/socket-error-messages.enum';
 
 @WebSocketGateway({
   cors: {
@@ -62,9 +64,44 @@ export class Gateway implements OnGatewayConnection, OnGatewayDisconnect {
     try {
       const creator = this.userManager.getUserBySocketId(client.id);
       const lobby = this.lobbyManager.createLobby(creator, lobbyData);
+      client.join(lobby.id);
       client.emit(SocketEvent.LOBBY_CREATED, { lobby });
     } catch (error) {
       client.emit(SocketEvent.ERROR, { message: 'User already in lobby' });
     }
+  }
+
+  @UsePipes(SocketValidationPipe())
+  @SubscribeMessage(SocketEvent.JOIN_LOBBY)
+  joinLobby(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() { lobbyId, password }: JoinLobbyDTO,
+  ) {
+    const lobby = this.lobbyManager.getLobbyById(lobbyId);
+    if (!lobby) {
+      client.emit(SocketEvent.ERROR, {
+        message: SocketErrorMessage.LOBBY_DOESNT_EXIST,
+      });
+      return;
+    }
+    if (lobby.comparePassword(password)) {
+      client.emit(SocketEvent.ERROR, {
+        message: SocketErrorMessage.INVALID_LOBBY_PARAMS,
+      });
+      return;
+    }
+    client.join(lobby.id);
+    const user = this.userManager.getUserBySocketId(client.id);
+    lobby.addUser(user);
+    client.emit(SocketEvent.JOINED_LOBBY, lobby);
+  }
+
+  @UsePipes(SocketValidationPipe())
+  @SubscribeMessage(SocketEvent.LEAVE_LOBBY)
+  leaveLobby(@ConnectedSocket() client: Socket) {
+    const user = this.userManager.getUserBySocketId(client.id);
+    const lobby = this.lobbyManager.getLobbyByUserSocketId(client.id);
+    lobby.removeUser(user);
+    client.emit(SocketEvent.LEFT_LOBBY);
   }
 }

@@ -16,7 +16,11 @@ export default class LobbyManager {
     );
   }
 
-  createLobby(creator: User, data: CreateLobbyDTO) {
+  getLobbyById(lobbyId: string): Lobby | undefined {
+    return this.lobbies.find((el) => el.id === lobbyId);
+  }
+
+  createLobby(creator: User, data: CreateLobbyDTO): Lobby {
     const checkLobby = this.getLobbyByUserSocketId(creator.socketId);
     if (checkLobby) throw new BadRequestException();
     const lobby = new Lobby(
