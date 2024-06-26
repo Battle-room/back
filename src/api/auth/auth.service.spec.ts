@@ -10,6 +10,7 @@ import JwtConfiguration from '../../config/jwt-config';
 import FrontendConfiguration from '../../config/frontend-config';
 import { MailService } from '../../mail/mail.service';
 import { BadRequestException, UnauthorizedException } from '@nestjs/common';
+import FileService from '../../files-public/file.service';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -68,6 +69,10 @@ describe('AuthService', () => {
         },
         {
           provide: FrontendConfiguration,
+          useValue: {},
+        },
+        {
+          provide: FileService,
           useValue: {},
         },
         {

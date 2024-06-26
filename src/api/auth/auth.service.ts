@@ -21,7 +21,7 @@ import { HOUR } from '../../utils/consts';
 import { LogInDTO } from './dto/log-in.dto';
 import { JwtPayload } from '../../security/JwtPayload';
 import { Tokens } from '../../utils/types/tokens.type';
-import FileService from 'src/files-public/file.service';
+import FileService from '../../files-public/file.service';
 import { UpdateUserDTO } from './dto/update-user.dto';
 
 @Injectable()
