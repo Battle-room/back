@@ -104,4 +104,10 @@ export class Gateway implements OnGatewayConnection, OnGatewayDisconnect {
     lobby.removeUser(user);
     client.emit(SocketEvent.LEFT_LOBBY);
   }
+
+  @SubscribeMessage(SocketEvent.GET_LOBBY_LIST)
+  getLobbyList(@ConnectedSocket() client: Socket) {
+    const lobbies = this.lobbyManager.lobbies;
+    client.emit(SocketEvent.RECEIVE_LOBBY_LIST, lobbies);
+  }
 }
