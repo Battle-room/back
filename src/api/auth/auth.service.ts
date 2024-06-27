@@ -23,7 +23,7 @@ import { Tokens } from '../../utils/types/tokens.type';
 import FileService from '../../files-public/file.service';
 import { UpdateUserDTO } from './dto/update-user.dto';
 import { InjectQueue } from '@nestjs/bull';
-import { MAIL_QUEUE } from 'src/queue/consts';
+import { MAIL_QUEUE } from '../../queue/consts';
 import { Queue } from 'bull';
 
 @Injectable()
