@@ -11,15 +11,15 @@ import JwtConfiguration from 'src/config/jwt-config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from 'src/database/entities/user.entity';
 import { Token } from 'src/database/entities/token.entity';
-import { MailModule } from 'src/mail/mail.module';
 import FileModule from 'src/files-public/file.module';
+import QueueModule from 'src/queue/queue.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([User, Token]),
     ConfigurationModule,
-    MailModule,
     FileModule,
+    QueueModule,
     JwtModule.registerAsync({
       imports: [ConfigurationModule],
       inject: [JwtConfiguration],

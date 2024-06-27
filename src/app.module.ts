@@ -7,6 +7,9 @@ import { CorsMiddleware } from './utils/middleware/cors.middleware';
 import GatewayModule from './gateway/gateway.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { BullModule } from '@nestjs/bull';
+import ConfigurationModule from './config/configuration.module';
+import RedisConfig from './config/redis-config';
 
 @Module({
   imports: [
@@ -16,6 +19,16 @@ import { join } from 'path';
     }),
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'public'),
+    }),
+    BullModule.forRootAsync({
+      imports: [ConfigurationModule],
+      inject: [RedisConfig],
+      useFactory: async (configService: RedisConfig) => ({
+        redis: {
+          host: configService.host,
+          port: configService.port,
+        },
+      }),
     }),
     DatabaseModule,
     AuthModule,

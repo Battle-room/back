@@ -15,7 +15,6 @@ import { EmailDTO } from './dto/email.dto';
 import * as uuid from 'uuid';
 import { Token } from '../../database/entities/token.entity';
 import FrontendConfiguration from '../../config/frontend-config';
-import { MailService } from '../../mail/mail.service';
 import { TokenDTO } from './dto/token.dto';
 import { HOUR } from '../../utils/consts';
 import { LogInDTO } from './dto/log-in.dto';
@@ -23,6 +22,9 @@ import { JwtPayload } from '../../security/JwtPayload';
 import { Tokens } from '../../utils/types/tokens.type';
 import FileService from '../../files-public/file.service';
 import { UpdateUserDTO } from './dto/update-user.dto';
+import { InjectQueue } from '@nestjs/bull';
+import { MAIL_QUEUE } from 'src/queue/consts';
+import { Queue } from 'bull';
 
 @Injectable()
 export default class AuthService {
@@ -34,8 +36,8 @@ export default class AuthService {
     private readonly jwtService: JwtService,
     private readonly jwtConfig: JwtConfiguration,
     private readonly frontendConfig: FrontendConfiguration,
-    private readonly mailService: MailService,
     private readonly fileService: FileService,
+    @InjectQueue(MAIL_QUEUE) private readonly mailQueue: Queue,
   ) {}
 
   async validateUser(email: string, password: string): Promise<User> {
@@ -112,7 +114,7 @@ export default class AuthService {
     const token = this.tokenRepo.create({ value: tokenValue, user });
     await this.tokenRepo.save(token);
 
-    await this.mailService.send({
+    await this.mailQueue.add({
       to: user.email,
       subject: 'Email verify',
       message: 'Follow the link to verify your email',
